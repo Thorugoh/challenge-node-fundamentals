@@ -14,6 +14,17 @@ class CreateTransactionService {
   }
 
   public execute({title, type, value}: Request): Transaction {
+    
+    const balance = this.transactionsRepository.getBalance();
+
+    if(type == 'outcome')
+    {
+      const total = balance.total - value;
+      
+      if(total < 0)
+        throw Error('outcome not permitted, value too high')
+    }
+
     const transaction = this.transactionsRepository.create({
       title,
       type,
